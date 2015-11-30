@@ -18,7 +18,7 @@ class UART
 {
 public:
 	UART(volatile unsigned char & udr, unsigned long int baud, int txBuffersize, int rxBuffersize);
-	virtual ~UART();
+	~UART();
 
 	void end();
 	void begin();
@@ -49,7 +49,8 @@ public:
 private:
 
 	//it call every incoming byte
-	virtual void byteRecived(char rxByte);
+	//virtual
+	void byteRecived(char rxByte);
 
 
 	volatile unsigned char* _udr;
