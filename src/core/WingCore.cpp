@@ -6,19 +6,23 @@
  */
 
 #include "WingCore.h"
+#include <avr/eeprom.h>
+
+#include "../serial/SerialIface.h"
+#include "util/delay.h"
 
 double mainTableEEMEM[SPEED_POINT][RUD_ANGLE_POINT] EEMEM =
 {
-{ 0, 2, 5, 10, 12, 15, 16, -1, -1, -1 },
-{ 10, 0, 10, 15, 46, 55, 60, 0, 0, 0 },
-{ 20, 0, 12, 18, 43, 50, 60, 0, 0, 0 },
-{ 30, 0, 15, 20, 39, 47, 58, 0, 0, 0 },
-{ 40, 0, 15, 25, 34, 43, 54, 0, 0, 0 },
-{ 50, 0, 17, 25, 31, 40, 52, 0, 0, 0 },
-{ 60, 0, 15, 22, 28, 38, 47, 0, 0, 0 },
-{ 70, 0, 12, 19, 25, 33, 40, 0, 0, 0 },
-{ 80, 0, 12, 17, 22, 28, 33, 0, 0, 0 },
-{ 90, 0, 9, 15, 20, 23, 28, 0, 0, 0 } };
+{ 0, 2, 5, 10, 12, 15, 16, 18, 20, 25 },
+{ 10, 9, 10, 15, 46, 55, 60, 65, 68, 72 },
+{ 20, 8, 12, 18, 43, 50, 60, 63, 65, 70 },
+{ 30, 7, 15, 20, 39, 47, 58, 60, 63, 65 },
+{ 40, 6, 15, 25, 34, 43, 54, 57, 59, 62 },
+{ 50, 5, 17, 25, 31, 40, 52, 52, 53, 58 },
+{ 60, 4, 15, 22, 28, 38, 47, 39, 47, 53 },
+{ 70, 3, 12, 19, 25, 33, 40, 42, 45, 47 },
+{ 80, 2, 12, 17, 22, 28, 33, 34, 37, 42 },
+{ 90, 1, 9, 15, 20, 23, 28, 31, 34, 37 } };
 
 double mainTableBuff[SPEED_POINT][RUD_ANGLE_POINT];
 
@@ -36,7 +40,7 @@ void saveBuffTable()
 
 double getWingAnglePoint(double speed, double rudAngel)
 {
-	float speedPos = 0, anglePos = 0;
+	float speedPos = 1, anglePos = 1;
 
 	if (speed <= mainTableBuff[1][0])
 		speedPos = 1;
@@ -46,21 +50,22 @@ double getWingAnglePoint(double speed, double rudAngel)
 		for (unsigned char i = 1; i < SPEED_POINT - 1; i++)
 			if ((mainTableBuff[i][0] < speed)
 					&& (mainTableBuff[i + 1][0] >= speed))
-				speedPos = (mainTableBuff[i + 1][0] - mainTableBuff[i][0])
-						/ (speed - mainTableBuff[i][0]) + i;
+				speedPos = ((speed - mainTableBuff[i][0])
+						/ (mainTableBuff[i + 1][0] - mainTableBuff[i][0])) + i;
 
 	if (rudAngel <= mainTableBuff[0][1])
-		speedPos = 1;
+		anglePos = 1;
 	else if (rudAngel >= mainTableBuff[0][RUD_ANGLE_POINT - 1])
-		speedPos = RUD_ANGLE_POINT - 1;
+		anglePos = RUD_ANGLE_POINT - 1;
 	else
 		for (unsigned char i = 1; i < RUD_ANGLE_POINT - 1; i++)
 			if ((mainTableBuff[0][i] < rudAngel)
 					&& (mainTableBuff[0][i + 1] >= rudAngel))
-				speedPos = (mainTableBuff[0][i + 1] - mainTableBuff[0][i])
-						/ (rudAngel - mainTableBuff[0][i]) + i;
+				anglePos = ((rudAngel - mainTableBuff[0][i])
+						/ (mainTableBuff[0][i + 1] - mainTableBuff[0][i])) + i;
 
-	/************/ //TODO
+	/************/
+	//TODO
 	/*
 	 * 1. ////////ok - found 4 points
 	 * 2. get 4 point data
@@ -68,7 +73,6 @@ double getWingAnglePoint(double speed, double rudAngel)
 	 */
 
 	return mainTableBuff[(long int) speedPos][(long int) anglePos];
-
 }
 
 bool setSpeedRange(unsigned char pos, double speed)
@@ -87,9 +91,9 @@ bool setRudRange(unsigned char pos, double rudAngle)
 	return true;
 }
 
-bool setPoint(unsigned char speedPos, unsigned char rudAnglePos, double speed)
+bool setPoint(unsigned char speedPos, unsigned char rudAnglePos, double wingAngle)
 {
-	mainTableBuff[speedPos + 1][rudAnglePos + 1] = speed;
+	mainTableBuff[speedPos + 1][rudAnglePos + 1] = wingAngle;
 	saveBuffTable();
 	return true;
 }

@@ -31,13 +31,30 @@ int main()
 	{
 		setWingAngle(getWingAnglePoint(getSpeed(), fabs(getAngel())));
 
-//		port(F("Speed: "));
-//		port((long int)getSpeed());
-//		port("\t");
-//		port(F("Angel: "));
-//		port((long int)getAngel());
-//		port("\r\n");
+//		setWingAngle(getSpeed()*2);
+//				port(F("Speed: "));
+//				port((long int)getSpeed());
+//				port("\t");
+//				port(F("Angel: "));
+//				port((long int)getAngel());
+//				port("\r\n");
 
+
+//		for(int i = 0; i < 150; i++)
+//			for(int k = 0; k < 20; k++)
+//			{
+////				port(F("Speed: "));
+////				port(i);
+////				port("\t");
+////				port(F("Angel: "));
+////				port(k);
+////				port("\t");
+////				port(F("WingAngel: "));
+////				port((long int)
+//				setWingAngle(getWingAnglePoint(i,k));//);
+////				port("\r\n");
+////
+//			}
 	}
 
 	return 0;
