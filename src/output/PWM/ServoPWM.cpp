@@ -8,7 +8,7 @@
 #include "ServoPWM.h"
 #include "avr/io.h"
 
-void setup()
+void setupPWMoutput()
 {
 	// Timer/Counter 1 initialization
 	// Clock source: System Clock
@@ -44,12 +44,12 @@ void setup()
 
 void setOutputA(int position)
 {
-//	if (position > 250)
-//		position = 250;
-//	if (position < 0)
-//		position = 0;
+	if (position > 250)
+		position = 250;
+	if (position < 0)
+		position = 0;
 
-	OCR1A = position;// + 125;
+	OCR1A = position + 125;
 }
 
 void setOutputB(int position)

@@ -20,5 +20,9 @@ bool setRudRange(unsigned char pos, double rudAngle);
 bool setPoint(unsigned char speedPos, unsigned char rudAnglePos, double speed);
 
 
+void loadBuffTable();
+void saveBuffTable();
+void sortSpeedRange();
+void sortRudRange();
 
 #endif /* CORE_WINGCORE_H_ */

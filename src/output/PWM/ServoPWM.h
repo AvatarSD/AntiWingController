@@ -8,7 +8,7 @@
 #ifndef PWM_SERVOPWM_H_
 #define PWM_SERVOPWM_H_
 
-void setup();
+void setupPWMoutput();
 void setOutputA(int position);
 void setOutputB(int position);
 
